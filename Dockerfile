@@ -3,9 +3,10 @@ FROM ubuntu:latest
 RUN apt update \
     && apt install apt-utils wget unzip procps -y
 RUN apt install git -y
-ARG url
+#ARG url
 WORKDIR /app
-RUN cd /app && git clone ${url}
+#RUN cd /app && git clone ${url}
+RUN cd /app && git clone https://github.com/heroku/java-getting-started.git
 
 
 #Create maven directory and install
@@ -28,8 +29,9 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install openjdk-8-jdk -y
 
-ARG artifactid
-ARG version
+
+ARG artifactid java-getting-started
+ARG version 1.0
 ENV artifact ${artifactid}-${version}.jar
 WORKDIR /app
 RUN cd /app/java-getting-started/ && mvn package
@@ -43,5 +45,6 @@ RUN cp /app/java-getting-started/target/${artifact} /usr/local/tomcat/webapps/
 
 EXPOSE 8080
 ENTRYPOINT ["sh", "-c"]
+RUN chmod 777 /usr/local/tomcat/
 RUN chmod +x /usr/local/tomcat/bin/startup.sh
 CMD ["/usr/local/tomcat/bin/startup.sh"]
